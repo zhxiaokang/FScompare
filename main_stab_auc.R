@@ -1,3 +1,4 @@
+# This belongs to the GitHub project FScompare: https://github.com/zhxiaokang/FScompare 
 # Study the effect of using different numbers of selected genes
 # Use LOOCV to compare the performance of SAM, mRMR, and GeoDE, and use randomly selected genes as baseline
 # The classifiers below will be tested: SVM, RIDGE, LASSO, Random Forest
