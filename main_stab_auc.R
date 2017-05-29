@@ -533,7 +533,16 @@ for (n in seq(num.select.genes.down, num.select.genes.up, step)){
   print(paste('finished loop of', count.loop, '/', num.auc))
 }
 
-# plot the results
+#  ============  Plot the results  ===========
+
+#  Plot the results of stability
+x.axis <- seq(num.select.genes.down, num.select.genes.up, step)
+
+fig.stab <- data.frame(num_select_genes = x.axis, sam = stab.sam.list, mrmr = stab.mrmr.list, geode = stab.geode.list, rdm = stab.rdm.list)
+fig.stab.long <- melt(fig.stab, id='num_select_genes')
+fig.stab.smooth <- ggplot(data=fig.stab.long, aes(x=num_select_genes, y=value, colour=variable)) + geom_point() + stat_smooth(method="glm", fill = NA, formula = y ~ poly(x,2)) + xlab('Number of Selected Features') + ylab('Stability')
+
+#  Plot the results of prediction accuracy
 fig.auc.rf <- data.frame(num_select_genes = seq(num.select.genes.down, num.select.genes.up, step), sam.rf = auc.sam.rf.list, mrmr.rf = auc.mrmr.rf.list, geode.rf = auc.geode.rf.list, rdm.rf = auc.rdm.rf.list)
 fig.auc.svm <- data.frame(num_select_genes = seq(num.select.genes.down, num.select.genes.up, step), sam.svm = auc.sam.svm.list, mrmr.svm = auc.mrmr.svm.list, geode.svm = auc.geode.svm.list, rdm.svm = auc.rdm.svm.list)
 fig.auc.ridge <- data.frame(num_select_genes = seq(num.select.genes.down, num.select.genes.up, step), sam.ridge = auc.sam.ridge.list, mrmr.ridge = auc.mrmr.ridge.list, geode.ridge = auc.geode.ridge.list, rdm.ridge = auc.rdm.ridge.list)
@@ -542,10 +551,12 @@ fig.auc.rf.long<-melt(fig.auc.rf,id='num_select_genes')
 fig.auc.svm.long<-melt(fig.auc.svm,id='num_select_genes')
 fig.auc.ridge.long<-melt(fig.auc.ridge,id='num_select_genes')
 fig.auc.lasso.long<-melt(fig.auc.lasso,id='num_select_genes')
-p1 <- ggplot(data=fig.auc.rf.long, aes(x=num_select_genes, y=value, colour=variable)) + geom_line() + xlab('Number of Selected Genes') + ylab('AUC of RF')
-p2 <- ggplot(data=fig.auc.svm.long, aes(x=num_select_genes, y=value, colour=variable)) + geom_line() + xlab('Number of Selected Genes') + ylab('AUC of SVM')
-p3 <- ggplot(data=fig.auc.ridge.long, aes(x=num_select_genes, y=value, colour=variable)) + geom_line() + xlab('Number of Selected Genes') + ylab('AUC of RIDGE')
-p4 <- ggplot(data=fig.auc.lasso.long, aes(x=num_select_genes, y=value, colour=variable)) + geom_line() + xlab('Number of Selected Genes') + ylab('AUC of LASSO')
-figure.auc <- plot_grid(p1, p2, p3, p4, ncol = 2, nrow = 2)
+
+p1 <- ggplot(data=fig.auc.rf.long, aes(x=num_select_genes, y=value, colour=variable)) + geom_point() + stat_smooth(method="glm", fill = NA, formula = y ~ I(x*x)) + xlab('Number of Selected Features') + ylab('AUC of RF')
+p2 <- ggplot(data=fig.auc.svm.long, aes(x=num_select_genes, y=value, colour=variable)) + geom_point() + stat_smooth(method="glm", fill = NA, formula = y ~ I(x*x) ) + xlab('Number of Selected Features') + ylab('AUC of SVM')
+p3 <- ggplot(data=fig.auc.ridge.long, aes(x=num_select_genes, y=value, colour=variable)) + geom_point() + stat_smooth(method="glm", fill = NA, formula = y ~ I(x*x)) + xlab('Number of Selected Features') + ylab('AUC of RIDGE')
+p4 <- ggplot(data=fig.auc.lasso.long, aes(x=num_select_genes, y=value, colour=variable)) + geom_point() + stat_smooth(method="glm", fill = NA, formula = y ~ I(x*x)) + xlab('Number of Selected Features') + ylab('AUC of LASSO')
+
+fig.auc.smooth <- plot_grid(p1, p2, p3, p4, ncol = 2, nrow = 2, labels = c('a', 'b', 'c', 'd'))
  
 # # Fin
